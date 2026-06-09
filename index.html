@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="StudyTrack - Your smart homework reminder and tracker for students." />
+  <meta name="theme-color" content="#4f46e5" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="StudyTrack" />
+  <meta name="application-name" content="StudyTrack" />
+  <meta name="msapplication-TileColor" content="#4f46e5" />
+
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:title" content="StudyTrack - Homework Reminder" />
+  <meta property="og:description" content="Track, manage, and never miss a homework deadline again." />
+  <meta property="og:type" content="website" />
+
+  <title>StudyTrack – Homework Reminder</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Apple Touch Icon -->
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png" />
+
+  <!-- External Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="light-mode" id="app-body">
+
+  <!-- ========== HEADER ========== -->
+  <header class="app-header" role="banner">
+    <div class="header-inner container">
+
+      <!-- App Logo and Title -->
+      <div class="brand" aria-label="StudyTrack Logo and Title">
+        <img
+          src="icons/icon-192x192.png"
+          alt="StudyTrack Logo"
+          class="app-logo"
+          width="40"
+          height="40"
+        />
+        <span class="app-title">StudyTrack</span>
+      </div>
+
+      <!-- Dark Mode Toggle -->
+      <button
+        id="dark-mode-toggle"
+        class="btn btn-icon"
+        aria-label="Toggle dark mode"
+        aria-pressed="false"
+        title="Toggle Dark Mode"
+      >
+        <span class="icon-sun" aria-hidden="true">☀️</span>
+        <span class="icon-moon" aria-hidden="true">🌙</span>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <main class="main-content container" id="main-content" role="main">
+
+    <!-- ========== DASHBOARD SECTION ========== -->
+    <section class="dashboard-section" id="dashboard" aria-labelledby="dashboard-heading">
+      <h2 id="dashboard-heading" class="section-title">Dashboard</h2>
+
+      <div class="dashboard-grid" role="list" aria-label="Homework statistics">
+
+        <!-- Total Homework Card -->
+        <article class="stat-card stat-card--total" role="listitem" aria-label="Total homework">
+          <div class="stat-icon" aria-hidden="true">📚</div>
+          <div class="stat-info">
+            <span class="stat-label">Total Homework</span>
+            <span class="stat-value" id="stat-total" aria-live="polite">0</span>
+          </div>
+        </article>
+
+        <!-- Completed Homework Card -->
+        <article class="stat-card stat-card--completed" role="listitem" aria-label="Completed homework">
+          <div class="stat-icon" aria-hidden="true">✅</div>
+          <div class="stat-info">
+            <span class="stat-label">Completed</span>
+            <span class="stat-value" id="stat-completed" aria-live="polite">0</span>
+          </div>
+        </article>
+
+        <!-- Pending Homework Card -->
+        <article class="stat-card stat-card--pending" role="listitem" aria-label="Pending homework">
+          <div class="stat-icon" aria-hidden="true">⏳</div>
+          <div class="stat-info">
+            <span class="stat-label">Pending</span>
+            <span class="stat-value" id="stat-pending" aria-live="polite">0</span>
+          </div>
+        </article>
+
+        <!-- Homework Streak Card -->
+        <article class="stat-card stat-card--streak" role="listitem" aria-label="Current homework streak">
+          <div class="stat-icon" aria-hidden="true">🔥</div>
+          <div class="stat-info">
+            <span class="stat-label">Streak</span>
+            <span class="stat-value" id="stat-streak" aria-live="polite">0 days</span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ========== PROGRESS SECTION ========== -->
+    <section class="progress-section" id="progress" aria-labelledby="progress-heading">
+      <h2 id="progress-heading" class="section-title">Overall Progress</h2>
+
+      <div class="progress-wrapper">
+        <div
+          class="progress-bar-track"
+          role="progressbar"
+          aria-valuenow="0"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-label="Homework completion progress"
+        >
+          <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+        <p class="progress-text" id="progress-text" aria-live="polite">
+          <span id="progress-percentage">0%</span> completed
+        </p>
+      </div>
+    </section>
+
+    <!-- ========== ADD HOMEWORK FORM SECTION ========== -->
+    <section class="add-homework-section" id="add-homework" aria-labelledby="add-homework-heading">
+      <h2 id="add-homework-heading" class="section-title">Add New Homework</h2>
+
+      <div class="form-card">
+        <div class="form-grid" id="add-homework-form" aria-label="Add homework form">
+
+          <!-- Subject Input -->
+          <div class="form-group">
+            <label for="input-subject" class="form-label">Subject <span aria-hidden="true">*</span></label>
+            <input
+              type="text"
+              id="input-subject"
+              name="subject"
+              class="form-input"
+              placeholder="e.g. Mathematics"
+              maxlength="60"
+              required
+              aria-required="true"
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- Homework Title Input -->
+          <div class="form-group">
+            <label for="input-title" class="form-label">Homework Title <span aria-hidden="true">*</span></label>
+            <input
+              type="text"
+              id="input-title"
+              name="title"
+              class="form-input"
+              placeholder="e.g. Chapter 5 Exercises"
+              maxlength="100"
+              required
+              aria-required="true"
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- Description Textarea -->
+          <div class="form-group form-group--full">
+            <label for="input-description" class="form-label">Description</label>
+            <textarea
+              id="input-description"
+              name="description"
+              class="form-textarea"
+              placeholder="Add any additional notes or details..."
+              rows="3"
+              maxlength="500"
+              aria-describedby="description-hint"
+            ></textarea>
+            <small id="description-hint" class="form-hint">Optional – max 500 characters.</small>
+          </div>
+
+          <!-- Due Date Picker -->
+          <div class="form-group">
+            <label for="input-due-date" class="form-label">Due Date <span aria-hidden="true">*</span></label>
+            <input
+              type="date"
+              id="input-due-date"
+              name="dueDate"
+              class="form-input"
+              required
+              aria-required="true"
+            />
+          </div>
+
+          <!-- Priority Dropdown -->
+          <div class="form-group">
+            <label for="input-priority" class="form-label">Priority</label>
+            <select
+              id="input-priority"
+              name="priority"
+              class="form-select"
+              aria-label="Select homework priority"
+            >
+              <option value="" disabled selected>Select priority</option>
+              <option value="high">🔴 High</option>
+              <option value="medium">🟡 Medium</option>
+              <option value="low">🟢 Low</option>
+            </select>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="form-group form-group--full form-actions">
+            <button
+              type="button"
+              id="btn-add-homework"
+              class="btn btn-primary"
+              aria-label="Add homework to your list"
+            >
+              ➕ Add Homework
+            </button>
+            <button
+              type="button"
+              id="btn-clear-form"
+              class="btn btn-secondary"
+              aria-label="Clear the homework form"
+            >
+              Clear
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== SEARCH AND FILTER SECTION ========== -->
+    <section class="search-filter-section" id="search-filter" aria-labelledby="search-filter-heading">
+      <h2 id="search-filter-heading" class="section-title">Search &amp; Filter</h2>
+
+      <div class="search-filter-bar">
+
+        <!-- Search Bar -->
+        <div class="search-wrapper">
+          <label for="input-search" class="sr-only">Search homework</label>
+          <span class="search-icon" aria-hidden="true">🔍</span>
+          <input
+            type="search"
+            id="input-search"
+            name="search"
+            class="form-input search-input"
+            placeholder="Search by title or subject..."
+            aria-label="Search homework"
+            autocomplete="off"
+          />
+        </div>
+
+        <!-- Subject Filter Dropdown -->
+        <div class="filter-wrapper">
+          <label for="filter-subject" class="sr-only">Filter by subject</label>
+          <select
+            id="filter-subject"
+            class="form-select"
+            aria-label="Filter homework by subject"
+          >
+            <option value="all">All Subjects</option>
+            <!-- Options populated dynamically by JS -->
+          </select>
+        </div>
+
+        <!-- Sort by Due Date Dropdown -->
+        <div class="filter-wrapper">
+          <label for="sort-due-date" class="sr-only">Sort by due date</label>
+          <select
+            id="sort-due-date"
+            class="form-select"
+            aria-label="Sort homework by due date"
+          >
+            <option value="asc">Due Date: Earliest First</option>
+            <option value="desc">Due Date: Latest First</option>
+            <option value="priority">Priority: High to Low</option>
+          </select>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========== HOMEWORK LIST SECTION ========== -->
+    <section class="homework-list-section" id="homework-list-section" aria-labelledby="homework-list-heading">
+      <h2 id="homework-list-heading" class="section-title">
+        My Homework
+        <span class="list-count" id="list-count" aria-live="polite"></span>
+      </h2>
+
+      <!-- Homework Cards Container – dynamically populated by script.js -->
+      <div
+        class="homework-list"
+        id="homework-list"
+        role="list"
+        aria-label="Homework items"
+        aria-live="polite"
+        aria-relevant="additions removals"
+      >
+
+        <!-- ── Example / Placeholder Homework Card (rendered by JS) ── -->
+        <article class="homework-card priority-medium" role="listitem" data-id="example-001" aria-label="Example homework card">
+
+          <div class="card-header">
+            <span class="card-subject badge">Mathematics</span>
+            <span class="card-priority badge badge--medium">🟡 Medium</span>
+          </div>
+
+          <div class="card-body">
+            <h3 class="card-title">Chapter 5 Exercises</h3>
+            <p class="card-description">Complete problems 1–20 from the textbook. Show all working.</p>
+          </div>
+
+          <div class="card-footer">
+            <time class="card-due-date" datetime="2025-12-01">
+              📅 Due: December 1, 2025
+            </time>
+            <span class="card-status badge badge--pending">Pending</span>
+          </div>
+
+          <div class="card-actions">
+            <button
+              class="btn btn-sm btn-success"
+              aria-label="Mark Chapter 5 Exercises as complete"
+              data-action="complete"
+              data-id="example-001"
+            >
+              ✔ Complete
+            </button>
+            <button
+              class="btn btn-sm btn-warning"
+              aria-label="Edit Chapter 5 Exercises"
+              data-action="edit"
+              data-id="example-001"
+            >
+              ✏️ Edit
+            </button>
+            <button
+              class="btn btn-sm btn-danger"
+              aria-label="Delete Chapter 5 Exercises"
+              data-action="delete"
+              data-id="example-001"
+            >
+              🗑 Delete
+            </button>
+          </div>
+
+        </article>
+        <!-- ── End of Example Card ── -->
+
+      </div>
+
+      <!-- Empty State Message (shown when no homework exists) -->
+      <div class="empty-state hidden" id="empty-state" aria-live="polite">
+        <span class="empty-icon" aria-hidden="true">📭</span>
+        <p class="empty-message">No homework found. Add your first task above!</p>
+      </div>
+
+    </section>
+
+    <!-- ========== MOTIVATIONAL QUOTE SECTION ========== -->
+    <section class="quote-section" id="motivational-quote" aria-labelledby="quote-heading">
+      <h2 id="quote-heading" class="sr-only">Daily Motivational Quote</h2>
+
+      <blockquote class="quote-card" aria-live="polite">
+        <p class="quote-text" id="quote-text">
+          "The secret of getting ahead is getting started."
+        </p>
+        <footer class="quote-author">
+          — <cite id="quote-author">Mark Twain</cite>
+        </footer>
+      </blockquote>
+
+      <button
+        id="btn-new-quote"
+        class="btn btn-outline"
+        aria-label="Show a new motivational quote"
+      >
+        ✨ New Quote
+      </button>
+    </section>
+
+    <!-- ========== INSTALL APP BUTTON SECTION ========== -->
+    <section class="install-section hidden" id="install-section" aria-labelledby="install-heading">
+      <h2 id="install-heading" class="section-title">Get the App</h2>
+      <p class="install-description">
+        Install StudyTrack on your device for quick access — even offline!
+      </p>
+      <button
+        id="btn-install-app"
+        class="btn btn-primary btn-install"
+        aria-label="Install StudyTrack as an app on your device"
+      >
+        📲 Install App
+      </button>
+    </section>
+
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="app-footer" role="contentinfo">
+    <div class="footer-inner container">
+
+      <p class="footer-app-name">StudyTrack</p>
+
+      <p class="footer-version">
+        Version <span id="app-version">1.0.0</span>
+      </p>
+
+      <p class="footer-credits">
+        Created by <span class="footer-authors">Student Developers</span> 🎓
+      </p>
+
+    </div>
+  </footer>
+
+  <!-- External JavaScript (deferred for performance) -->
+  <script src="script.js" defer></script>
+
+</body>
+</html>
