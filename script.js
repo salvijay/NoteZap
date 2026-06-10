@@ -1,5 +1,5 @@
 /* ============================================================
-   NoteZap – script.js
+   StudyTrack – script.js
    Features: Add / Edit / Delete / Complete homework, Dashboard
    stats, Progress bar, Search & Filter & Sort, Dark mode,
    Motivational quotes, PWA install prompt, LocalStorage persist
@@ -31,7 +31,6 @@ const STREAK_KEY  = 'studytrack_streak';
 /* ── State ── */
 let homeworkList = [];
 let editingId    = null;
-let deferredInstallPrompt = null;
 let lastQuoteIndex = -1;
 
 /* ── DOM References ── */
@@ -60,8 +59,6 @@ const emptyState      = document.getElementById('empty-state');
 const quoteText       = document.getElementById('quote-text');
 const quoteAuthor     = document.getElementById('quote-author');
 const btnNewQuote     = document.getElementById('btn-new-quote');
-const installSection  = document.getElementById('install-section');
-const btnInstall      = document.getElementById('btn-install-app');
 
 /* ============================================================
    INIT
@@ -513,26 +510,6 @@ function bindEvents() {
 
   /* New quote */
   btnNewQuote?.addEventListener('click', () => showRandomQuote());
-
-  /* PWA Install */
-  window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    deferredInstallPrompt = e;
-    installSection?.classList.remove('hidden');
-  });
-
-  btnInstall?.addEventListener('click', async () => {
-    if (!deferredInstallPrompt) return;
-    deferredInstallPrompt.prompt();
-    const { outcome } = await deferredInstallPrompt.userChoice;
-    if (outcome === 'accepted') installSection?.classList.add('hidden');
-    deferredInstallPrompt = null;
-  });
-
-  window.addEventListener('appinstalled', () => {
-    installSection?.classList.add('hidden');
-    deferredInstallPrompt = null;
-  });
 }
 
 /* ============================================================
